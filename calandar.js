@@ -287,7 +287,7 @@ function readContents(priKeyValue, modeFlag){
 }
 
 function openTMSqurt(){
-  window.open("../../Teachable-Machine-AI-Fitness-Trainer-master/index.html?id="+ sessionStorage.getItem('id'), "_blank");
+  window.open( location.host + "/Teachable-Machine-AI-Fitness-Trainer-master/index.html?id="+ sessionStorage.getItem('id'), "_blank");
 }
 
 function removeContent(priKeyValue) {
