@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>로그인</title>
+  <link rel="stylesheet" href="login.css">
+</head>
+<body>
+	<div id="container">
+    <h3>로그인</h3>
+    <!-- <form action="localStorage3.html" onsubmit="return login()" method="get"> -->
+    <form action="javascript:return login();" method="get">
+      <div id="login_input">
+        <input id="id" name="id" type="text" autofocus placeholder="아이디">
+        <input id="pw" type="password" placeholder="비밀번호">
+      </div>
+      <div id="login_bttn">
+          <span>
+          <button type="submit"  class="order"   >로그인</button>
+          <button type="button" id="sign" class="order"  >회원가입</button>
+          </span>
+      </div>			
+    </form>		
+  </div>
+  <script>
+    var loginButton = document.querySelector("#login_bttn > span > button:nth-child(1)");
+    var signButton = document.getElementById("sign");
+
+    var idInputText = document.getElementById("id");
+    var pwInputPassword = document.getElementById("pw");
+
+    signButton.addEventListener("click", sign);
+    loginButton.addEventListener("click", login);
+
+    function login(){
+      if (!window.localStorage) {
+        //alert("로컬스토리지를 지원하지 않습니다.");
+        return;
+      }
+      var val = localStorage.getItem(idInputText.value);
+      if(val == null){
+        alert(idInputText.value + "라는 아이디는 없습니다.\n 가입 페이지로 이동합니다.");
+        sign();
+      }
+      else
+        if(val == pwInputPassword.value){
+          //alert('로그인 합니다.');
+          store();
+          self.opener.location.reload();
+          window.close();
+        } else {
+          alert('비번이 틀렸습니다.');
+          pwInputPassword.focus();
+        }
+    }
+
+    function sign(){
+      // window.open("/home/pc35/Documents/HTML5+CSS3/WORKSPACE/JavaScript/11일차(클라이언트 저장)/세션연습/register.html", "_blank");
+      window.open("register.html", "_parent", "width=800, height=500");
+    }
+
+    function store() { // e는 이벤트 객체
+      if(!window.sessionStorage) {
+        //alert("세션 스토리지를 지원하지 않습니다.");
+        return;
+      }
+      //sessionStorage.setItem('id', idInputText.value);
+      window.opener.sessionStorage.setItem('id', idInputText.value);
+    }
+
+  </script>
+</body>
+</html>

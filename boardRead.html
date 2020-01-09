@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        function refreshParent() {
+            window.opener.location.reload(true);
+        }
+    </script>
+
+</head>
+<body onunload="javascript:refreshParent()">
+    <h3>게시판 내용 읽기</h3>
+    <hr>
+    <div id="read_disp"></div>
+    <input type=button value="게시판으로 돌아가기" onclick="returnBoardView()">
+    <input type=button value="수정" onclick="updateContentFt()">
+    <input type=button value="삭제" onclick="removeContent()">
+
+    <script>
+        var v_boardData = [];
+        var v_tblName = "boardTable";
+        var i = 0;
+        var priKeyValue = 0;
+        var writer = "";
+        //페이지 로딩후 최초 자동 실행블락 곧 초기화 루틴
+        window.onload = function(){
+        //    alert(localStorage.getItem(v_tblName));  // 값이 없을 때 확인! -> null return!
+            var v_objStr = localStorage.getItem(v_tblName); 
+            if(v_objStr){
+                v_boardData = JSON.parse(v_objStr);  // return한 값이 배열!
+                console.log(v_boardData);  // 값 확인!
+                i = v_boardData[(v_boardData.length -1)].priKey + 1;
+            }
+            var currentLocation = window.location;
+            var str = currentLocation.search;
+            priKeyValue = str.substring((str.indexOf("?priKeyValue=") +"?priKeyValue=".length), str.length);
+            console.log(priKeyValue);
+            read(priKeyValue);
+        }
+        
+        function read(priKeyValue){
+            console.log(priKeyValue);
+            for(var i = 0; i<v_boardData.length; i++){
+                if(v_boardData[i].priKey == priKeyValue){
+                    var v_tblStr = "<table border=2>";
+                    v_tblStr += "<tr><td>제목</td>";
+                    v_tblStr += "<td>" + v_boardData[i].title + "</td>";
+                    v_tblStr += "<td>작성자</td>";
+                    v_tblStr += "<td>" + v_boardData[i].writer + "</td>";
+                    writer = v_boardData[i].writer;
+                    v_tblStr += "<td>작성일</td>";
+                    v_tblStr += "<td>" + v_boardData[i].regDate + "</td></tr>";
+                    v_tblStr += '<tr><td colspan="6">' + v_boardData[i].contents + "</td></tr></table>";
+                    v_boardData [i].cnt++;   
+                    break;
+                }
+            }
+            
+            document.getElementById("read_disp").innerHTML = v_tblStr; 
+
+            //localStorage는 JSON을 저장할 수 없으므로 문자열로 변환!
+            v_objStr = JSON.stringify(v_boardData);  
+
+            //저장!
+            localStorage.setItem(v_tblName, v_objStr);      
+        }
+        
+
+        function returnBoardView() {
+            window.open(("boardView.html"), "_parent");
+        }
+
+        function removeContent() {
+            for(var i = 0; i<v_boardData.length; i++){
+                if(v_boardData[i].priKey == priKeyValue){
+                    alert(priKeyValue + "번 글을 삭제합니다.");
+                    v_boardData.splice(i, 1);
+                    break;
+                }
+            }
+            v_objStr = JSON.stringify(v_boardData);  
+            localStorage.setItem(v_tblName, v_objStr);
+            returnBoardView();
+        }
+
+        function updateContentFt() {     
+            window.open(("boardWriteUpdate.html?" + writer + "&priKeyValue="+ priKeyValue +"&flag=수정"), "_blank", "left=300, top=300, width=800, height=400");
+        }
+
+    </script>
+
+</body>
+</html>
